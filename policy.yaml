@@ -1,0 +1,53 @@
+# ─────────────────────────────────────────────────────────────────────────
+# Agent File Guardian — policy
+#
+# THIS FILE IS THE SECURITY BOUNDARY. The local LLM only explains requests;
+# these rules decide what is allowed. Edit them to fit your machine.
+#
+# Rules are checked top to bottom. The FIRST rule whose `match_paths` (and
+# optional `operations`) match wins. Put your `deny` rules first.
+# Patterns are gitignore-style globs (`**` = any depth).
+# ─────────────────────────────────────────────────────────────────────────
+
+# Used when no rule matches. allow | ask | deny.  'ask' is the safe default.
+default_action: ask
+
+rules:
+  # 1. Hard no — secrets and keys. The agent should never touch these.
+  - name: "Block secrets and keys"
+    match_paths:
+      - "**/.env"
+      - "**/.env.*"
+      - "**/*.key"
+      - "**/*.pem"
+      - "**/id_rsa*"
+      - "**/.ssh/**"
+      - "**/secrets/**"
+      - "**/*wallet*"
+    action: deny
+
+  # 2. Personal folders — always pause and ask a human.
+  - name: "Personal folders need approval"
+    match_paths:
+      - "**/personal/**"
+      - "**/private/**"
+      - "**/Diary/**"
+    action: ask
+
+  # 3. The project workspace is safe to READ without interrupting you.
+  - name: "Workspace reads are fine"
+    match_paths:
+      - "workspace/**"
+    operations: ["read", "list"]
+    action: allow
+
+  # 4. ...but WRITING into the workspace still asks first.
+  - name: "Workspace writes need approval"
+    match_paths:
+      - "workspace/**"
+    operations: ["write", "delete"]
+    action: ask
+
+limits:
+  # Even an 'allow' write bigger than this is escalated to 'ask'.
+  max_write_bytes: 1048576   # 1 MB

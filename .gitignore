@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+guardian-audit.log
+.venv/
+venv/
+.DS_Store

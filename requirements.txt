@@ -1,0 +1,9 @@
+# Core (needed for the demo and the policy engine)
+pyyaml>=6.0
+pathspec>=0.12
+
+# Real agent integration (MCP server). Install with: pip install "mcp[cli]"
+# mcp>=1.2.0
+
+# Triage uses your LOCAL Ollama over plain HTTP (stdlib urllib) — no package
+# needed. Install Ollama separately from https://ollama.com if you want it.
