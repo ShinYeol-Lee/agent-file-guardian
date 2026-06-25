@@ -1,4 +1,5 @@
 # Agent File Guardian
+![demo](demo.png)
 
 A small, honest gate between an AI agent and your files.
 
